@@ -1,4 +1,4 @@
-package jsoniter
+package scopedjson
 
 import (
 	"encoding/json"
@@ -21,10 +21,13 @@ type Config struct {
 	UseNumber                     bool
 	DisallowUnknownFields         bool
 	TagKey                        string
+	ScopeKey                      string
 	OnlyTaggedField               bool
 	ValidateJsonRawMessage        bool
 	ObjectFieldMustBeSimpleString bool
 	CaseSensitive                 bool
+	ScopeBitResolver              func(scope string) int
+	ScopeMask                     int
 }
 
 // API the public interface of this package.
@@ -80,6 +83,8 @@ type frozenConfig struct {
 	streamPool                    *sync.Pool
 	iteratorPool                  *sync.Pool
 	caseSensitive                 bool
+	scopeBitResolver              func(scope string) int
+	scopeMask                     int
 }
 
 func (cfg *frozenConfig) initCache() {
@@ -134,6 +139,8 @@ func (cfg Config) Froze() API {
 		onlyTaggedField:               cfg.OnlyTaggedField,
 		disallowUnknownFields:         cfg.DisallowUnknownFields,
 		caseSensitive:                 cfg.CaseSensitive,
+		scopeBitResolver:              cfg.ScopeBitResolver,
+		scopeMask:                     cfg.ScopeMask,
 	}
 	api.streamPool = &sync.Pool{
 		New: func() interface{} {
@@ -217,6 +224,14 @@ func (cfg *frozenConfig) getTagKey() string {
 		return "json"
 	}
 	return tagKey
+}
+
+func (cfg *frozenConfig) getScopeKey() string {
+	scopeKey := cfg.configBeforeFrozen.ScopeKey
+	if scopeKey == "" {
+		return "scope"
+	}
+	return scopeKey
 }
 
 func (cfg *frozenConfig) RegisterExtension(extension Extension) {

@@ -1,4 +1,4 @@
-module github.com/json-iterator/go
+module github.com/1lann/scopedjson
 
 go 1.12
 

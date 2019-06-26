@@ -1,7 +1,7 @@
 package extra
 
 import (
-	"github.com/json-iterator/go"
+	jsoniter "github.com/1lann/scopedjson"
 	"strings"
 	"unicode"
 )

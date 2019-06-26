@@ -1,4 +1,4 @@
-package jsoniter
+package scopedjson
 
 type trueAny struct {
 	baseAny

@@ -1,13 +1,14 @@
-package jsoniter
+package scopedjson
 
 import (
 	"fmt"
-	"github.com/modern-go/reflect2"
 	"reflect"
 	"sort"
 	"strings"
 	"unicode"
 	"unsafe"
+
+	"github.com/modern-go/reflect2"
 )
 
 var typeDecoders = map[string]ValDecoder{}
@@ -338,7 +339,11 @@ func describeStruct(ctx *ctx, typ reflect2.Type) *StructDescriptor {
 	for i := 0; i < structType.NumField(); i++ {
 		field := structType.Field(i)
 		tag, hastag := field.Tag().Lookup(ctx.getTagKey())
+		scope, hasScope := field.Tag().Lookup(ctx.getScopeKey())
 		if ctx.onlyTaggedField && !hastag && !field.Anonymous() {
+			continue
+		}
+		if !(hasScope && (ctx.scopeBitResolver(scope)&ctx.scopeMask != 0)) {
 			continue
 		}
 		tagParts := strings.Split(tag, ",")

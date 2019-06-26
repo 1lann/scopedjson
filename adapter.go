@@ -1,4 +1,4 @@
-package jsoniter
+package scopedjson
 
 import (
 	"bytes"
