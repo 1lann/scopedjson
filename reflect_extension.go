@@ -343,11 +343,6 @@ func describeStruct(ctx *ctx, typ reflect2.Type) *StructDescriptor {
 		if ctx.onlyTaggedField && !hastag && !field.Anonymous() {
 			continue
 		}
-		fmt.Println("has scope:", hasScope)
-		fmt.Println("scop mask:", ctx.scopeMaskResolver(scope))
-		fmt.Println("scope bit:", ctx.scopeBit)
-		fmt.Println("scope key:", ctx.getScopeKey())
-		fmt.Println("field tag:", string(field.Tag()))
 		if !(hasScope && (ctx.scopeMaskResolver(scope)&ctx.scopeBit != 0)) &&
 			!field.Anonymous() {
 			continue
